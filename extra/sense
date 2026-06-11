@@ -677,8 +677,8 @@ function EspInterface.Load()
 		createObject(plrs[i]);
 	end
 
-	EspInterface.playerAdded = players.PlayerAdded:Connect(createObject);
-	EspInterface.playerRemoving = players.PlayerRemoving:Connect(removeObject);
+	--EspInterface.playerAdded = players.PlayerAdded:Connect(createObject);
+	--EspInterface.playerRemoving = players.PlayerRemoving:Connect(removeObject);
 	EspInterface._hasLoaded = true;
 end
 
