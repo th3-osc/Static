@@ -56,17 +56,17 @@ local GAMES = {
         patterns = { "sniper duels" },
     },
     ["South Bronx"] = {
-         = "South Bronx",
+        placeName = "South Bronx",
         placeIds = { 13643807539 },
         patterns = { "south bronx" },
     },
     ["Boxing Beta"] = {
-         = "Boxing Beta",
+       placeName = "Boxing Beta",
         placeIds = { 6804602922 },
         patterns = { "boxing beta" },
     },
     ["Asylum Life"] = {
-         = "Asylum Life",
+        placeName = "Asylum Life",
         placeIds = { 132352755769957 },
         patterns = { "asylum life" },
     },
