@@ -35,6 +35,11 @@ local GAMES = {
         placeIds = { 14386691987, 71832465156084, 17652853807, 17652855195, 17122385635 },
         patterns = { "basketball legends" },
     },
+    ["Fight On A Baseplate"] = {
+        placeName = "Fight On A Baseplate",
+        placeIds = { 137378874406308, 130960021905304 },
+        patterns = { "fight on a baseplate" },
+    },
     ["Notoriety"] = {
         placeName = "Notoriety",
         placeIds = { 2557847604, 104434907248230 },
@@ -51,17 +56,17 @@ local GAMES = {
         patterns = { "sniper duels" },
     },
     ["South Bronx"] = {
-        placeName = "South Bronx",
+         = "South Bronx",
         placeIds = { 13643807539 },
         patterns = { "south bronx" },
     },
     ["Boxing Beta"] = {
-        placeName = "Boxing Beta",
+         = "Boxing Beta",
         placeIds = { 6804602922 },
         patterns = { "boxing beta" },
     },
     ["Asylum Life"] = {
-        placeName = "Asylum Life",
+         = "Asylum Life",
         placeIds = { 132352755769957 },
         patterns = { "asylum life" },
     },
@@ -143,6 +148,13 @@ function GameDetector.findGame()
                     return gameKey, gameData
                 end
             end
+        end
+    end
+
+    for gameKey, gameData in GAMES do
+        if gameData.placeName and placeName:lower() == gameData.placeName:lower() then
+            Utils.log("INFO", "Game detected by placeName: " .. gameData.placeName)
+            return gameKey, gameData
         end
     end
 
