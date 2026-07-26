@@ -65,6 +65,11 @@ local GAMES = {
         placeIds = { 6804602922 },
         patterns = { "boxing beta" },
     },
+    ["Catch A Fade"] = {
+        placeName = "Catch A Fade",
+        placeIds = { 103820982596314 },
+        patterns = { "catch a fade" },
+    },
     ["Asylum Life"] = {
         placeName = "Asylum Life",
         placeIds = { 132352755769957 },
