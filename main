@@ -81,6 +81,7 @@ local GAMES = {
 local Utils = {}
 
 function Utils.log(level, msg)
+    if true then return end
     local prefix = string.format("[Static][%s]", level)
     if level == "ERROR" then warn(prefix, msg) else print(prefix, msg) end
 end
