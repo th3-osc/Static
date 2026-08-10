@@ -1165,7 +1165,7 @@ function Loader.new()
         Utils.ensureFolder(CONFIG.FOLDER_KEYS)
 
         self.api = Utils.try(function()
-            return loadstring(game:HttpGet("https://sdkAPI-public.luarmor.net/library.lua"))()
+            return loadstring(game:HttpGet("https://sdkapi-public.luarmor.net/library.lua"))()
         end, "Failed to load API")
 
         if not self.api then error("API load failed") end
