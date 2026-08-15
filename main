@@ -1,14 +1,14 @@
 repeat task.wait() until game:IsLoaded()
 
 local cloneref = cloneref or function(x) return x end
-local Services = {
-    Players = cloneref(game:GetService("Players")),
-    TweenService = cloneref(game:GetService("TweenService")),
-    UserInputService = cloneref(game:GetService("UserInputService")),
-    MarketplaceService = cloneref(game:GetService("MarketplaceService")),
-    CoreGui = cloneref(game:GetService("CoreGui")),
-    HttpService = cloneref(game:GetService("HttpService")),
-}
+local Services = setmetatable({}, {
+    __index = function(self, name)
+        local service = cloneref(game:GetService(name))
+
+        rawset(self, name, service)
+        return service
+    end,
+})
 
 local CONFIG = {
     API_SCRIPT_ID = "85a45c6dd86733f3b4b2a1a202d86e06",
@@ -27,53 +27,63 @@ local CONFIG = {
 local GAMES = {
     ["Fight In A School"] = {
         placeName = "Fight In A School",
-        placeIds = { 10449761463, 118758941554698, 17698425045, 86098085533596 },
+        placeIds = { 10449761463, 118758941554698, 17698425045, 86098085533596, 18248633989 },
         patterns = { "fight in a school", "fias" },
+        scriptId = "0d2d572f15c6f7cadf64487ba847b318",
     },
     ["Basketball Legends"] = {
         placeName = "Basketball Legends",
         placeIds = { 14386691987, 71832465156084, 17652853807, 17652855195, 17122385635 },
         patterns = { "basketball legends" },
+        scriptId = "d651b384eb6b9dadd5fa880d92964bd0",
     },
     ["Fight On A Baseplate"] = {
         placeName = "Fight On A Baseplate",
         placeIds = { 137378874406308, 130960021905304 },
         patterns = { "fight on a baseplate" },
+        scriptId = "6d6795f24939220077846e2dcd061899",
     },
     ["Notoriety"] = {
         placeName = "Notoriety",
         placeIds = { 2557847604, 104434907248230 },
         patterns = { "notoriety" },
+        scriptId = "ba155a0896796df27bcad875d780d289",
     },
     ["South London"] = {
         placeName = "South London",
         placeIds = { 114478751418135 },
         patterns = { "south london" },
+        scriptId = "7ed34bca615b58ee8bdaf78d76f6e561",
     },
     ["Sniper Duels"] = {
         placeName = "Sniper Duels",
         placeIds = { 109397169461300 },
         patterns = { "sniper duels" },
+        scriptId = "84c59bd05f2ccf5e5ac01782893096de",
     },
     ["South Bronx"] = {
         placeName = "South Bronx",
-        placeIds = { 13643807539 },
+        placeIds = { 13643807539, 15124180230 },
         patterns = { "south bronx" },
+        scriptId = "bac59f16cf716a33f5d92edc957e2b97",
     },
     ["Boxing Beta"] = {
-       placeName = "Boxing Beta",
+        placeName = "Boxing Beta",
         placeIds = { 6804602922 },
         patterns = { "boxing beta" },
+        scriptId = "3959aa25424a81cd4780e2174bb70c8e",
     },
     ["Catch A Fade"] = {
         placeName = "Catch A Fade",
         placeIds = { 103820982596314 },
         patterns = { "catch a fade" },
+        scriptId = "f31186f24b1fb500e89b318e63ca4eb6",
     },
     ["Asylum Life"] = {
         placeName = "Asylum Life",
         placeIds = { 132352755769957 },
         patterns = { "asylum life" },
+        scriptId = "e0eab6d61bda3f875f555c3e1335efe1",
     },
 }
 
@@ -1169,7 +1179,8 @@ function Loader.new()
         end, "Failed to load API")
 
         if not self.api then error("API load failed") end
-        self.api.script_id = CONFIG.API_SCRIPT_ID
+        local _, gameData = GameDetector.findGame()
+        self.api.script_id = (gameData and gameData.scriptId) or CONFIG.API_SCRIPT_ID
 
         self.keyMgr = KeyManager.new(self.api)
 
