@@ -81,7 +81,7 @@ local GAMES = {
     },
     ["Tha Bronx 3"] = {
         placeName = "Tha Bronx 3",
-        placeIds = { 7543126540 },
+        placeIds = { 128899661081075 },
         patterns = { "tha bronx 3", "tha bronx" },
         scriptId = "a46b99fea5bd7337cdd727827d307cfe",
     },
