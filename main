@@ -63,7 +63,7 @@ local GAMES = {
     },
     ["South Bronx"] = {
         placeName = "South Bronx",
-        placeIds = { 13643807539, 15124180230 },
+        placeIds = { 13643807539, 15124180230, 14413475235 },
         patterns = { "south bronx" },
         scriptId = "bac59f16cf716a33f5d92edc957e2b97",
     },
