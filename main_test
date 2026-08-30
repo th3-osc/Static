@@ -1,15 +1,14 @@
-print('wait for loaded')
 repeat task.wait() until game:IsLoaded()
-print('finished')
+
 local cloneref = cloneref or function(x) return x end
-local Services = {
-    Players = cloneref(game:GetService("Players")),
-    TweenService = cloneref(game:GetService("TweenService")),
-    UserInputService = cloneref(game:GetService("UserInputService")),
-    MarketplaceService = cloneref(game:GetService("MarketplaceService")),
-    CoreGui = cloneref(game:GetService("CoreGui")),
-    HttpService = cloneref(game:GetService("HttpService")),
-}
+local Services = setmetatable({}, {
+    __index = function(self, name)
+        local service = cloneref(game:GetService(name))
+
+        rawset(self, name, service)
+        return service
+    end,
+})
 
 local CONFIG = {
     API_SCRIPT_ID = "85a45c6dd86733f3b4b2a1a202d86e06",
@@ -19,69 +18,19 @@ local CONFIG = {
     DISCORD_INVITE = "XYsTvuudeU",
     LOGO_URL = "https://raw.githubusercontent.com/Ih0bby/Static/main/logo.png",
     LOGO_PATH = "Static/assets/logo.png",
+    GAMES_URL = "https://raw.githubusercontent.com/Ih0bby/Static/main/games.json",
+    GAMES_PATH = "Static/games.json",
     KEY_PROVIDERS = {
         { name = "Linkvertise — Recommended • ~53s", url = "https://ads.luarmor.net/get_key?for=-LvxiSZlmxoFL" },
         { name = "LootLabs — ~2m 27s", url = "https://ads.luarmor.net/get_key?for=Static-OWulwoDvNPea" },
     },
 }
 
-local GAMES = {
-    ["Fight In A School"] = {
-        placeName = "Fight In A School",
-        placeIds = { 10449761463, 118758941554698, 17698425045, 86098085533596 },
-        patterns = { "fight in a school", "fias" },
-    },
-    ["Basketball Legends"] = {
-        placeName = "Basketball Legends",
-        placeIds = { 14386691987, 71832465156084, 17652853807, 17652855195, 17122385635 },
-        patterns = { "basketball legends" },
-    },
-    ["Fight On A Baseplate"] = {
-        placeName = "Fight On A Baseplate",
-        placeIds = { 137378874406308, 130960021905304 },
-        patterns = { "fight on a baseplate" },
-    },
-    ["Notoriety"] = {
-        placeName = "Notoriety",
-        placeIds = { 2557847604, 104434907248230 },
-        patterns = { "notoriety" },
-    },
-    ["South London"] = {
-        placeName = "South London",
-        placeIds = { 114478751418135 },
-        patterns = { "south london" },
-    },
-    ["Sniper Duels"] = {
-        placeName = "Sniper Duels",
-        placeIds = { 109397169461300 },
-        patterns = { "sniper duels" },
-    },
-    ["South Bronx"] = {
-        placeName = "South Bronx",
-        placeIds = { 13643807539 },
-        patterns = { "south bronx" },
-    },
-    ["Boxing Beta"] = {
-       placeName = "Boxing Beta",
-        placeIds = { 6804602922 },
-        patterns = { "boxing beta" },
-    },
-    ["Catch A Fade"] = {
-        placeName = "Catch A Fade",
-        placeIds = { 103820982596314 },
-        patterns = { "catch a fade" },
-    },
-    ["Asylum Life"] = {
-        placeName = "Asylum Life",
-        placeIds = { 132352755769957 },
-        patterns = { "asylum life" },
-    },
-}
-
 
 local Utils = {}
-print('testing1')
+
 function Utils.log(level, msg)
+    if true then return end
     local prefix = string.format("[Static][%s]", level)
     if level == "ERROR" then warn(prefix, msg) else print(prefix, msg) end
 end
@@ -130,6 +79,32 @@ function Assets.loadLogo()
 end
 
 
+local Games = { cache = nil }
+
+function Games.all()
+    if Games.cache then return Games.cache end
+
+    local raw = Utils.try(function()
+        return game:HttpGet(CONFIG.GAMES_URL)
+    end, "Failed to fetch games")
+
+    local list = raw and Utils.try(function()
+        return Services.HttpService:JSONDecode(raw)
+    end, "Failed to decode games")
+
+    if list and list[1] then
+        if writefile then pcall(writefile, CONFIG.GAMES_PATH, raw) end
+    elseif isfile and isfile(CONFIG.GAMES_PATH) then
+        list = Utils.try(function()
+            return Services.HttpService:JSONDecode(readfile(CONFIG.GAMES_PATH))
+        end, "Failed to decode cached games")
+    end
+
+    Games.cache = list or {}
+    return Games.cache
+end
+
+
 local GameDetector = {}
 
 function GameDetector.getCurrentPlace()
@@ -144,44 +119,44 @@ end
 
 function GameDetector.findGame()
     local placeId, placeName = GameDetector.getCurrentPlace()
+    local games = Games.all()
     Utils.log("INFO", string.format("Detecting game - PlaceId: %d, Name: %s", placeId, placeName))
 
-    for gameKey, gameData in GAMES do
-        if gameData.placeIds then
-            for _, id in gameData.placeIds do
+    for _, data in games do
+        if data.placeIds then
+            for _, id in data.placeIds do
                 if id == placeId then
-                    Utils.log("INFO", "Game detected by PlaceId: " .. gameData.placeName)
-                    return gameKey, gameData
+                    Utils.log("INFO", "Game detected by PlaceId: " .. data.name)
+                    return data
                 end
             end
         end
     end
 
-    for gameKey, gameData in GAMES do
-        if gameData.placeName and placeName:lower() == gameData.placeName:lower() then
-            Utils.log("INFO", "Game detected by placeName: " .. gameData.placeName)
-            return gameKey, gameData
+    for _, data in games do
+        if data.name and placeName == data.name:lower() then
+            Utils.log("INFO", "Game detected by name: " .. data.name)
+            return data
         end
     end
 
-    for gameKey, gameData in GAMES do
-        if gameData.patterns then
-            for _, pattern in gameData.patterns do
+    for _, data in games do
+        if data.patterns then
+            for _, pattern in data.patterns do
                 if string.find(placeName, pattern:lower(), 1, true) then
-                    Utils.log("INFO", "Game detected by pattern: " .. gameData.placeName)
-                    return gameKey, gameData
+                    Utils.log("INFO", "Game detected by pattern: " .. data.name)
+                    return data
                 end
             end
         end
     end
 
     Utils.log("INFO", "No game detected")
-    return nil, nil
+    return nil
 end
 
 function GameDetector.isSupported()
-    local gk, _ = GameDetector.findGame()
-    return gk ~= nil
+    return GameDetector.findGame() ~= nil
 end
 
 
@@ -1165,11 +1140,12 @@ function Loader.new()
         Utils.ensureFolder(CONFIG.FOLDER_KEYS)
 
         self.api = Utils.try(function()
-            return loadstring(game:HttpGet("https://sdkapi-public.luarmor.net/library.lua"))()
+            return loadstring(game:HttpGet("https://sdkAPI-public.luarmor.net/library.lua"))()
         end, "Failed to load API")
 
         if not self.api then error("API load failed") end
-        self.api.script_id = CONFIG.API_SCRIPT_ID
+        local gameData = GameDetector.findGame()
+        self.api.script_id = (gameData and gameData.scriptId) or CONFIG.API_SCRIPT_ID
 
         self.keyMgr = KeyManager.new(self.api)
 
