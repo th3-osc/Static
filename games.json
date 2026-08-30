@@ -59,4 +59,10 @@
         "patterns": ["tha bronx 3", "tha bronx"],
         "scriptId": "a46b99fea5bd7337cdd727827d307cfe"
     }
+    {
+        "name": "Asylum Life",
+        "placeIds": [132352755769957],
+        "patterns": ["asylum life"],
+        "scriptId": "e0eab6d61bda3f875f555c3e1335efe1"
+    }
 ]
