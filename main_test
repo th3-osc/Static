@@ -79,11 +79,9 @@ function Assets.loadLogo()
 end
 
 
-local Games = { cache = nil }
+local Games = { list = nil, ready = false }
 
-function Games.all()
-    if Games.cache then return Games.cache end
-
+function Games.load()
     local raw = Utils.try(function()
         return game:HttpGet(CONFIG.GAMES_URL)
     end, "Failed to fetch games")
@@ -100,65 +98,71 @@ function Games.all()
         end, "Failed to decode cached games")
     end
 
-    Games.cache = list or {}
-    return Games.cache
+    Games.list = (list and list[1]) and list or nil
+    Games.ready = true
+
+    return Games.list
+end
+
+task.spawn(Games.load)
+
+function Games.all()
+    local deadline = os.clock() + 10
+    while not Games.ready and os.clock() < deadline do
+        task.wait()
+    end
+
+    if not Games.list and Games.ready then
+        Games.load()
+    end
+
+    return Games.list
 end
 
 
 local GameDetector = {}
 
-function GameDetector.getCurrentPlace()
-    local placeId = game.PlaceId
-    local placeName = "Unknown"
-    local ok, info = pcall(function()
-        return Services.MarketplaceService:GetProductInfo(placeId)
-    end)
-    if ok and info then placeName = info.Name:lower() end
-    return placeId, placeName
-end
-
 function GameDetector.findGame()
-    local placeId, placeName = GameDetector.getCurrentPlace()
     local games = Games.all()
-    Utils.log("INFO", string.format("Detecting game - PlaceId: %d, Name: %s", placeId, placeName))
+    if not games then
+        Utils.log("ERROR", "Game list unavailable")
+        return nil, false
+    end
 
     for _, data in games do
-        if data.placeIds then
-            for _, id in data.placeIds do
-                if id == placeId then
-                    Utils.log("INFO", "Game detected by PlaceId: " .. data.name)
-                    return data
-                end
+        for _, id in data.placeIds or {} do
+            if id == game.PlaceId then
+                Utils.log("INFO", "Game detected by PlaceId: " .. data.name)
+                return data, true
             end
         end
     end
 
-    for _, data in games do
-        if data.name and placeName == data.name:lower() then
-            Utils.log("INFO", "Game detected by name: " .. data.name)
-            return data
-        end
-    end
+    local name = Utils.try(function()
+        return Services.MarketplaceService:GetProductInfo(game.PlaceId).Name:lower()
+    end, "Failed to fetch place info")
 
-    for _, data in games do
-        if data.patterns then
-            for _, pattern in data.patterns do
-                if string.find(placeName, pattern:lower(), 1, true) then
+    if name then
+        for _, data in games do
+            if data.name and data.name:lower() == name then
+                Utils.log("INFO", "Game detected by name: " .. data.name)
+                return data, true
+            end
+        end
+
+        for _, data in games do
+            for _, pattern in data.patterns or {} do
+                if name:find(pattern:lower(), 1, true) then
                     Utils.log("INFO", "Game detected by pattern: " .. data.name)
-                    return data
+                    return data, true
                 end
             end
         end
     end
 
     Utils.log("INFO", "No game detected")
-    return nil
+    return nil, true
 end
-
-function GameDetector.isSupported()
-    return GameDetector.findGame() ~= nil
-end
-
 
 local KeyManager = {}
 
@@ -1218,11 +1222,14 @@ function Loader.new()
             return
         end
 
-        if not GameDetector.isSupported() then
+        local gameData, known = GameDetector.findGame()
+        if not gameData and known then
             self.notify("Unsupported", "This game is not currently supported.", T.red)
             self.shake()
             return
         end
+
+        self.api.script_id = (gameData and gameData.scriptId) or CONFIG.API_SCRIPT_ID
 
         key = Utils.sanitize(key)
         self.notify("Validating", "Checking your key...", T.accent)
