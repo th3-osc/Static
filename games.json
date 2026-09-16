@@ -64,5 +64,13 @@
         "placeIds": [132352755769957],
         "patterns": ["asylum life"],
         "scriptId": "e0eab6d61bda3f875f555c3e1335efe1"
+    },
+    {
+        "name": "Knife Duels",
+        "placeIds": [112731528776884],
+        "patterns": ["knife duels"],
+        "scriptId": "e7fc08106fa3dab6c13e91078a168b23"
     }
+}
+
 ]
