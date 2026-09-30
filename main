@@ -131,9 +131,9 @@ function GameDetector.findGame()
     end
 
     for _, data in games do
-        for _, id in data.placeIds or {} do
-            if id == game.PlaceId then
-                Utils.log("INFO", "Game detected by PlaceId: " .. data.name)
+        for _, id in data.gameIds or {} do
+            if id == game.GameId then
+                Utils.log("INFO", "Game detected by GameId: " .. data.name)
                 return data, true
             end
         end
