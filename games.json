@@ -1,75 +1,80 @@
 [
     {
+        "name": "Lagless FIAS",
+        "gameIds": [10644031659],
+        "patterns": ["lagless fias"],
+        "scriptId": "0d2d572f15c6f7cadf64487ba847b318"
+    },
+    {
         "name": "Fight In A School",
-        "placeIds": [10449761463, 118758941554698, 17698425045, 86098085533596, 18248633989],
+        "gameIds": [6061766680],
         "patterns": ["fight in a school", "fias"],
         "scriptId": "0d2d572f15c6f7cadf64487ba847b318"
     },
     {
         "name": "Basketball Legends",
-        "placeIds": [14386691987, 71832465156084, 17652853807, 17652855195, 17122385635],
+        "gameIds": [4931927012],
         "patterns": ["basketball legends"],
         "scriptId": "d651b384eb6b9dadd5fa880d92964bd0"
     },
     {
         "name": "Fight On A Baseplate",
-        "placeIds": [137378874406308, 130960021905304],
+        "gameIds": [10372466625],
         "patterns": ["fight on a baseplate"],
         "scriptId": "6d6795f24939220077846e2dcd061899"
     },
     {
         "name": "Notoriety",
-        "placeIds": [2557847604, 104434907248230],
+        "gameIds": [16680835],
         "patterns": ["notoriety"],
         "scriptId": "ba155a0896796df27bcad875d780d289"
     },
     {
         "name": "South London",
-        "placeIds": [114478751418135],
+        "gameIds": [7428819247],
         "patterns": ["south london"],
         "scriptId": "7ed34bca615b58ee8bdaf78d76f6e561"
     },
     {
         "name": "Sniper Duels",
-        "placeIds": [109397169461300],
+        "gameIds": [7264587281],
         "patterns": ["sniper duels"],
         "scriptId": "84c59bd05f2ccf5e5ac01782893096de"
     },
     {
         "name": "South Bronx",
-        "placeIds": [13643807539, 15124180230, 14413475235],
+        "gameIds": [3734304510],
         "patterns": ["south bronx"],
         "scriptId": "bac59f16cf716a33f5d92edc957e2b97"
     },
     {
         "name": "Boxing Beta",
-        "placeIds": [6804602922],
+        "gameIds": [2583564222],
         "patterns": ["boxing beta"],
         "scriptId": "3959aa25424a81cd4780e2174bb70c8e"
     },
     {
         "name": "Catch A Fade",
-        "placeIds": [103820982596314],
+        "gameIds": [10195887022],
         "patterns": ["catch a fade"],
         "scriptId": "f31186f24b1fb500e89b318e63ca4eb6"
     },
     {
         "name": "Tha Bronx 3",
-        "placeIds": [128899661081075],
+        "gameIds": [10737656087],
         "patterns": ["tha bronx 3", "tha bronx"],
         "scriptId": "a46b99fea5bd7337cdd727827d307cfe"
     },
     {
-        "name": "Asylum Life",
-        "placeIds": [132352755769957],
-        "patterns": ["asylum life"],
-        "scriptId": "e0eab6d61bda3f875f555c3e1335efe1"
-    },
-    {
         "name": "Knife Duels",
-        "placeIds": [112731528776884],
+        "gameIds": [9641502068],
         "patterns": ["knife duels"],
         "scriptId": "e7fc08106fa3dab6c13e91078a168b23"
+    },
+    {
+        "name": "Asylum Life",
+        "gameIds": [6749060816],
+        "patterns": ["asylum life"],
+        "scriptId": "e0eab6d61bda3f875f555c3e1335efe1"
     }
-
 ]
