@@ -1254,7 +1254,7 @@ function Loader.new()
                 script_key = key
                 self.close()
                 self.api.load_script()
-                print("api load script called')
+                print("api load script called")
             end)
         else
             self.notify("Error", msg, T.red)
