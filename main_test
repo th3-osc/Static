@@ -16,9 +16,9 @@ local CONFIG = {
     FOLDER_KEYS = "Static/keys",
     FOLDER_ASSETS = "Static/assets",
     DISCORD_INVITE = "XYsTvuudeU",
-    LOGO_URL = "https://raw.githubusercontent.com/Ih0bby/Static/main/logo.png",
+    LOGO_URL = "https://raw.githubusercontent.com/th3-osc/Static/main/logo.png",
     LOGO_PATH = "Static/assets/logo.png",
-    GAMES_URL = "https://raw.githubusercontent.com/Ih0bby/Static/main/games.json",
+    GAMES_URL = "https://raw.githubusercontent.com/th3-osc/Static/main/games.json",
     GAMES_PATH = "Static/games.json",
     KEY_PROVIDERS = {
         { name = "Linkvertise — Recommended • ~53s", url = "https://ads.luarmor.net/get_key?for=-LvxiSZlmxoFL" },
@@ -71,6 +71,7 @@ function Assets.loadLogo()
 
         if not isfile(CONFIG.LOGO_PATH) then
             local data = game:HttpGet(CONFIG.LOGO_URL)
+            if data:sub(2, 4) ~= "PNG" then return end
             writefile(CONFIG.LOGO_PATH, data)
         end
         asset = getcustomasset(CONFIG.LOGO_PATH)
@@ -89,7 +90,7 @@ function Games.load()
     local list = raw and Utils.try(function()
         return Services.HttpService:JSONDecode(raw)
     end, "Failed to decode games")
-
+    
     if list and list[1] then
         if writefile then pcall(writefile, CONFIG.GAMES_PATH, raw) end
     elseif isfile and isfile(CONFIG.GAMES_PATH) then
@@ -130,9 +131,9 @@ function GameDetector.findGame()
     end
 
     for _, data in games do
-        for _, id in data.placeIds or {} do
-            if id == game.PlaceId then
-                Utils.log("INFO", "Game detected by PlaceId: " .. data.name)
+        for _, id in data.gameIds or {} do
+            if id == game.GameId then
+                Utils.log("INFO", "Game detected by GameId: " .. data.name)
                 return data, true
             end
         end
@@ -1223,24 +1224,37 @@ function Loader.new()
         end
 
         local gameData, known = GameDetector.findGame()
-        if not gameData and known then
-            self.notify("Unsupported", "This game is not currently supported.", T.red)
+        if not gameData then
+            self.notify(
+                known and "Unsupported" or "Offline",
+                known and "This game is not currently supported." or "Couldn't reach the game list.",
+                T.red
+            )
             self.shake()
             return
         end
 
-        self.api.script_id = (gameData and gameData.scriptId) or CONFIG.API_SCRIPT_ID
+        if gameData.scriptId == CONFIG.API_SCRIPT_ID then
+            self.notify("Error", "Invalid script id for this game.", T.red)
+            self.shake()
+            return
+        end
 
+        self.api.script_id = gameData.scriptId
+        print("got scriptid loading")
         key = Utils.sanitize(key)
         self.notify("Validating", "Checking your key...", T.accent)
-
+        print("validating")
         local ok, msg = self.keyMgr.validate(key)
+        print("pre checking")
         if ok then
+            print("success")
             self.notify("Success", "Key valid! Loading...", T.green)
             task.delay(0.5, function()
                 script_key = key
                 self.close()
                 self.api.load_script()
+                print("api load script called')
             end)
         else
             self.notify("Error", msg, T.red)
