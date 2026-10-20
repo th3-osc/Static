@@ -76,5 +76,12 @@
         "gameIds": [6749060816],
         "patterns": ["asylum life"],
         "scriptId": "e0eab6d61bda3f875f555c3e1335efe1"
+    },
+    {
+        "name": "Blackhawk Rescue Mission 5",
+        "gameIds": [1054526971],
+        "patterns": ["blackhawk rescue mission 5", "brm5"],
+        "scriptId": "8d78cbdd82ee5d8c664abf3ccf0db61d"
     }
+
 ]
