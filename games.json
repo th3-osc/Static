@@ -2,13 +2,19 @@
     {
         "name": "Lagless FIAS",
         "gameIds": [10767772210],
-        "patterns": ["lagless fias"],
+        "patterns": ["lagless fias", "lagless"],
         "scriptId": "0d2d572f15c6f7cadf64487ba847b318"
     },
     {
         "name": "Fight In A School",
-        "gameIds": [6061766680],
+        "gameIds": [6061766680, 7304829508],
         "patterns": ["fight in a school", "fias"],
+        "scriptId": "0d2d572f15c6f7cadf64487ba847b318"
+    },
+    {
+        "name": "Unstable SMP",
+        "gameIds": [10772281976],
+        "patterns": ["unstable smp"],
         "scriptId": "0d2d572f15c6f7cadf64487ba847b318"
     },
     {
@@ -83,5 +89,4 @@
         "patterns": ["blackhawk rescue mission 5", "brm5"],
         "scriptId": "8d78cbdd82ee5d8c664abf3ccf0db61d"
     }
-
 ]
